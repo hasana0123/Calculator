@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Calculator</title>
+        <link rel="stylesheet" href="main.css" />
+    </head>
+    <body>
+        <div id="container">
+            <div id="content">
+                <div id="text">
+                    <font class="white big"> CASIO <br /> </font>
+                    <font class="white medium"> fx-991ES PLUS<br /> </font>
+                    <font class="green small">
+                        <i>nATURAL U.P.A.M</i>
+                    </font>
+                </div>
+                <div id="solar" class="white">
+                    <span> TWO WAY POWER </span>
+                </div>
+            </div>
+            <div id="screen">
+                <div id="setup">
+                    <div class="inactive">S</div>
+                    <div class="inactive">A</div>
+                    <div class="inactive">M</div>
+                    <div class="inactive">STO</div>
+                    <div class="inactive">RCL</div>
+                    <div class="inactive">STAT</div>
+                    <div class="inactive">CMPLX</div>
+                    <div class="inactive">MAT</div>
+                    <div class="inactive">VCT</div>
+                    <div class="active">D</div>
+                    <div class="inactive">R</div>
+                    <div class="inactive">G</div>
+                    <div class="inactive">FIX</div>
+                    <div class="inactive">SCI</div>
+                    <div class="active">Math</div>
+                    <div class="inactive">&uparrow;</div>
+                    <div class="inactive">&downarrow;</div>
+                    <div class="inactive">Disp</div>
+                </div>
+                <div id="expression">
+                    <div id="cursor" class="active">
+                        |
+                    </div>
+                </div>
+                <div id="evaluation">
+                    2
+                </div>
+            </div>
+            <div id="buttons">
+                <div id="type1">
+                    <span>
+                        <div class="parrot">
+                            <div class="orange">SHIFT</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="pink">ALPHA</div>
+                        </div>
+                        <div class="parrot"></div>
+                        <div class="parrot"></div>
+                        <div class="parrot"></div>
+                        <div class="parrot">
+                            <div class="white">MODE</div>
+                            <div class="orange">SETUP</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="white">ON</div>
+                        </div>
+                    </span>
+                    <div class="row">
+                        <div id="shift">S</div>
+                        <div id="alpha">A</div>
+                        <div id="left">L</div>
+                        <div class="dir">
+                            <div id="up">U</div>
+                            <div id="down">D</div>
+                        </div>
+                        <div id="right">R</div>
+                        <div id="mode">M</div>
+                        <div id="on">ON</div>
+                    </div>
+                    <span>
+                        <div class="col">
+                            <div class="parrot">
+                                <div class="orange">SOLVE</div>
+                                <div class="pink">=</div>
+                            </div>
+                            <div class="parrot">
+                                <div class="orange">d/dx</div>
+                                <div class="pink">:</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="parrot">
+                                <div class="orange">x!</div>
+                            </div>
+                            <div class="parrot">
+                                <div class="orange">E</div>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+                <div id="type2">
+                    <div class="row">
+                        <div class="col">
+                            <div id="calc">C</div>
+                            <div id="integration">i</div>
+                        </div>
+                        <div class="col">
+                            <div id="inverse">x<sup>-1</sup></div>
+                            <div id="logx">l</div>
+                        </div>
+                    </div>
+                    <span>
+                        <div class="parrot">
+                            <div class="orange">x(y/z)</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">x<sup>1/3</sup></div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">x<sup>3</sup></div>
+                            <div class="green">DEC</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">x<sup>1/y</sup></div>
+                            <div class="green">HEX</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">10<sup>x</sup></div>
+                            <div class="green">BIN</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">e<sup>x</sup></div>
+                            <div class="green">OCT</div>
+                        </div>
+                    </span>
+                    <div class="row">
+                        <div id="fraction">f</div>
+                        <div id="square-root">s</div>
+                        <div id="square">x<sup>2</sup></div>
+                        <div id="power">p</div>
+                        <div id="log">log</div>
+                        <div id="ln">ln</div>
+                    </div>
+                    <span>
+                        <div class="parrot">
+                            <div class="orange">(<)</div>
+                            <div class="pink">[A]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange"><-</div>
+                            <div class="pink">[B]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">Abs</div>
+                            <div class="pink">[C]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">sin<sup>-1</sup></div>
+                            <div class="pink">[D]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">cos<sup>-1</sup></div>
+                            <div class="pink">[E]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">tan<sup>-1</sup></div>
+                            <div class="pink">[F]</div>
+                        </div>
+                    </span>
+                    <div class="row">
+                        <div id="sign">(-)</div>
+                        <div id="degree">deg</div>
+                        <div id="hyperbolic">hyp</div>
+                        <div id="sin">sin</div>
+                        <div id="cos">cos</div>
+                        <div id="tan">tan</div>
+                    </div>
+                    <span>
+                        <div class="parrot">
+                            <div class="orange">STO</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange"><-</div>
+                            <div class="pink">i</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">%</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">,</div>
+                            <div class="pink">X</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange"><-></div>
+                            <div class="pink">Y</div>
+                        </div>
+                        <div class="orange">M-</div>
+                        <div class="pink">M</div>
+                    </span>
+                    <div class="row">
+                        <div id="RCL">RCL</div>
+                        <div id="ENG">ENG</div>
+                        <div id="opening-bracket">(</div>
+                        <div id="closing-bracket">)</div>
+                        <div id="standard-decimal">S=D</div>
+                        <div id="memory">M+</div>
+                    </div>
+                </div>
+                <div id="type3">
+                    <span>
+                        <div class="parrot">
+                            <div class="orange">CONST</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">CONV</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">CLR</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">INS</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">OFF</div>
+                        </div>
+                    </span>
+                    <div class="row">
+                        <div class="bg-white" id="seven">7</div>
+                        <div class="bg-white" id="eight">8</div>
+                        <div class="bg-white" id="nine">9</div>
+                        <div class="bg-orange" id="delete">DEL</div>
+                        <div class="bg-orange" id="allclear">AC</div>
+                    </div>
+                    <span>
+                        <div class="parrot">
+                            <div class="orange">[MATRIX]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">[VECTOR]</div>
+                        </div>
+                        <div class="parrot"></div>
+                        <div class="parrot">
+                            <div class="orange">nPr</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">nCr</div>
+                        </div>
+                    </span>
+                    <div class="row">
+                        <div class="bg-white" id="four">4</div>
+                        <div class="bg-white" id="five">5</div>
+                        <div class="bg-white" id="six">6</div>
+                        <div class="bg-white" id="multiply">x</div>
+                        <div class="bg-white" id="divide">/</div>
+                    </div>
+                    <span>
+                        <div class="parrot">
+                            <div class="orange">[STAT]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">[COMPLX]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">[BASE]</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">Pol</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">Rec</div>
+                        </div>
+                    </span>
+                    <div class="row">
+                        <div class="bg-white" id="one">1</div>
+                        <div class="bg-white" id="two">2</div>
+                        <div class="bg-white" id="three">3</div>
+                        <div class="bg-white" id="addition">+</div>
+                        <div class="bg-white" id="subtraction">-</div>
+                    </div>
+                    <span>
+                        <div class="parrot">
+                            <div class="orange">Rnd</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">Ran#</div>
+                            <div class="pink">Ranint</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">pi</div>
+                            <div class="pink">e</div>
+                        </div>
+                        <div class="parrot">
+                            <div class="orange">DRG</div>
+                        </div>
+                        <div class="parrot"></div>
+                    </span>
+                    <div class="row">
+                        <div class="bg-white" id="zero">0</div>
+                        <div class="bg-white" id="decimal">.</div>
+                        <div class="bg-white" id="power-of-10">
+                            x10<sup>x</sup>
+                        </div>
+                        <div class="bg-white" id="answer">Ans</div>
+                        <div class="bg-white" id="equalsto">=</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="main.js"></script>
+    </body>
+</html>
