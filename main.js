@@ -8,27 +8,42 @@ const seven = document.querySelector("#seven");
 const eight = document.querySelector("#eight");
 const nine = document.querySelector("#nine");
 const zero = document.querySelector("#zero");
-const numbersKeys = [one, two, three, four, five, six, seven, eight, nine, zero]; 
+const numbersKeys = [
+    one,
+    two,
+    three,
+    four,
+    five,
+    six,
+    seven,
+    eight,
+    nine,
+    zero,
+];
+
+const decimal = document.querySelector("#decimal");
 
 const addition = document.querySelector("#addition");
 const subtraction = document.querySelector("#subtraction");
 const multiplication = document.querySelector("#multiply");
 const division = document.querySelector("#divide");
 const arithmeticKeys = [addition, subtraction, multiplication, division];
+
 const equalsTo = document.querySelector("#equalsto");
 const del = document.querySelector("#delete");
 
 const cursor = document.querySelector("#cursor");
-
 
 const expression = document.querySelector("#expression");
 let evaluation = document.querySelector("#evaluation");
 evaluation.textContent = "";
 var temp = "";
 var numbers = [];
+var operators = [];
+var allExpressions = '';
 
 numbersKeys.forEach((key) => {
-    key.addEventListener('click', () => {
+    key.addEventListener("click", () => {
         const number = key.textContent;
         temp += number;
         expression.removeChild(cursor);
@@ -37,12 +52,20 @@ numbersKeys.forEach((key) => {
     });
 });
 
-arithmeticKeys.forEach((key) =>{
-    key.addEventListener('click',()=>{
-        if(temp.length>0){
-           const number = Number(temp);
-           numbers.push(number);
-           temp = "";
+decimal.addEventListener("click", () => {
+    console.log("decimal clicked");
+    temp += ".";
+    expression.removeChild(cursor);
+    expression.textContent += ".";
+    expression.appendChild(cursor);
+});
+
+arithmeticKeys.forEach((key) => {
+    key.addEventListener("click", () => {
+        if (temp.length > 0) {
+            const number = Number(temp);
+            numbers.push(number);
+            temp = "";
         }
         const operator = key.textContent;
         operators.push(operator);
@@ -52,80 +75,116 @@ arithmeticKeys.forEach((key) =>{
     });
 });
 
-equalsTo.addEventListener('click',()=>{
-    if(temp.length>0){
+equalsTo.addEventListener("click", () => {
+    if (temp.length > 0) {
         const number = Number(temp);
         numbers.push(number);
         temp = "";
-     }
-     expression.removeChild(cursor);
-    var allExpressions = expression.textContent.trim();
-    console.log(allExpressions);
+    }
+    expression.removeChild(cursor);
+    allExpressions = expression.textContent.trim();
 
-    if(operators.includes("/")){
-        let operatorCount =0;
-        operators.forEach(operator => {
-            if (operator == "/"){
-                operatorCount++;
-            }
-            
-        });
-        while (operatorCount != 0){
-            
-            let index = allExpressions.indexOf("/");
-            let count = 1;
-            console.log(index);
-            let firstNumber = 0;
-            let secondNumber = 0;
-            let j = 1;
-            while(Number(allExpressions[index-count])){
-                firstNumber = allExpressions[index-count]*j + firstNumber;
-                j *= 10;
-                count++;
-    
-            }
-            console.log(firstNumber);
-            j = 1;
-            count = 1;
-            while(Number(allExpressions[index+count])){
-                secondNumber =  secondNumber + allExpressions[index+count]*j ;
-                j *= 10;
-                count++;
-    
-            }
-            console.log(secondNumber);
-            console.log(operators.count("/"));
-
-            let result = firstNumber / secondNumber;
-            console.log(result);
+    while(operators.length) {
+        if (operators.includes("/")) {
+            operate('/');
+        }
+        else if(operators.includes("x")) {
+            operate('x');
+        }
+        else if(operators.includes("+")) {
+            operate('+');
+        }
+        else {
+            operate('-');
         }
     }
-
-    //  operators.forEach((operator)=>{
-    //      const first = numbers.shift();
-    //      const second = numbers.shift();
-    //      switch (operator) {
-    //          case "+":
-    //              numbers. unshift(first+second);
-    //              break;
-    //          default:
-    //              break;
-    //      }
-    //  });
-    //  console.log(numbers[0]);
-    //  evaluation.textContent = numbers[0];
-    // console.log(numbers);
-    // console.log(operators);
-    // console.log(evaluation.textContent);
+    evaluation.textContent = allExpressions;
 });
+
+del.addEventListener('click', () => {
+    expression.removeChild(cursor);
+    if(expression.textContent.length) {
+        expression.textContent = expression.textContent.slice(0, -1);
+        if(temp.length) {
+            temp = temp.slice(0, -1);
+        }
+        else {
+            operators.pop();
+        }
+    }
+    expression.appendChild(cursor);
+});
+
+const operate = (op) => {
+    let operatorCount = 0;
+    operators.forEach((operator) => {
+        if (operator == op) {
+            operatorCount++;
+        }
+    });
+    console.log('OperatorCount', operatorCount);
+    while (operatorCount != 0) {
+        let index = allExpressions.indexOf(op);
+        let count = 1;
+        let firstNumber = 0;
+        let secondNumber = 0;
+        let j = 1;
+        while (!isNaN(allExpressions[index - count]) || allExpressions[index - count] == ".") {
+            if (allExpressions[index - count] == ".") {
+                firstNumber /= j;
+                j = 1;
+            } else {
+                firstNumber = Number(allExpressions[index - count]) * j + firstNumber;
+                j *= 10;
+            }
+            count++;
+        }
+        j = 10;
+        count = 1;
+        let flag = false;
+        while (!isNaN(allExpressions[index + count]) || allExpressions[index + count] == ".") {
+            if(allExpressions[index + count] == '.') {
+                flag = true;
+                j = 10;
+                count++;
+                continue;
+            }
+            if (flag) {
+                secondNumber += allExpressions[index + count]/j;
+                j *= 10;
+            } else {
+                secondNumber = secondNumber*j + Number(allExpressions[index + count]);
+            }
+            count++;
+        }
+        let exp = firstNumber + op + secondNumber;
+        let result = 0;
+        if(op == '/') {
+            result = Number(Math.round((firstNumber / secondNumber) + 'e6') + 'e-6');
+        }
+        else if(op == 'x') {
+            result = Number(Math.round((firstNumber * secondNumber) + 'e6') + 'e-6');
+        }
+        else if(op == '+') {
+            result = Number(Math.round((firstNumber + secondNumber) + 'e6') + 'e-6');
+        }
+        else {
+            result = Number(Math.round((firstNumber - secondNumber) + 'e6') + 'e-6');
+        }
+        allExpressions = allExpressions.replace(exp, result);
+        operators.splice(operators.indexOf(op), 1);
+        operatorCount--;
+    }
+
+}
 
 var blink = setInterval(handleBlink, 500);
 
-function handleBlink(){
-    if (cursor.classList.contains("active")){
+function handleBlink() {
+    if (cursor.classList.contains("active")) {
         cursor.classList.remove("active");
         cursor.classList.add("inactive");
-    }else{
+    } else {
         cursor.classList.remove("inactive");
         cursor.classList.add("active");
     }

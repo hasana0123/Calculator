@@ -8,7 +8,7 @@ body {
     border: 2px solid rgb(128, 128, 128);
     height: auto;
     width: 300px;
-    background-color: rgb(20, 24, 87);
+    background-color: rgb(35, 37, 53);
     border-radius: 10px;
 }
 
@@ -42,7 +42,7 @@ body {
 
 
 #screen {
-    background-color: rgb(119, 82, 82);
+    background-color: rgb(139, 107, 107);
     margin: 10px auto ;
     height: 80px;
     max-width: 90%;
@@ -146,6 +146,11 @@ body {
     width: 40px;
     border-radius: 5px;
     box-shadow: 4px 4px rgba(0,0,0,8);
+    cursor: pointer;
+}
+
+#type3 .row div:hover {
+    background-color: cornflowerblue;
 }
 
 
