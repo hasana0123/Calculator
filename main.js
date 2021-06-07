@@ -17,7 +17,7 @@ const division = document.querySelector("#divide");
 const arithmeticKeys = [addition, subtraction, multiplication, division];
 const equalsTo = document.querySelector("#equalsto");
 const del = document.querySelector("#delete");
-
+const decimal = document.querySelector("#decimal");
 const cursor = document.querySelector("#cursor");
 
 
@@ -26,6 +26,7 @@ let evaluation = document.querySelector("#evaluation");
 evaluation.textContent = "";
 var temp = "";
 var numbers = [];
+var operators = [];
 
 numbersKeys.forEach((key) => {
     key.addEventListener('click', () => {
@@ -36,6 +37,13 @@ numbersKeys.forEach((key) => {
         expression.appendChild(cursor);
     });
 });
+
+decimal.addEventListener('click',() =>{
+    temp += ".";
+    expression.removeChild(cursor);
+    expression.textContent += ".";
+    expression.appendChild(cursor);
+})
 
 arithmeticKeys.forEach((key) =>{
     key.addEventListener('click',()=>{
@@ -78,26 +86,44 @@ equalsTo.addEventListener('click',()=>{
             let firstNumber = 0;
             let secondNumber = 0;
             let j = 1;
-            while(Number(allExpressions[index-count])){
-                firstNumber = allExpressions[index-count]*j + firstNumber;
+            let flag = false;
+            while(!isNaN(allExpressions[index-count])|| allExpressions[index-count] =="."){
+                if (allExpressions[index-count] =="."){
+                    firstNumber = firstNumber/j;
+                    j = 1;
+                    count ++;
+                    continue;
+                }
+                
+                firstNumber = allExpressions[index-count]*j + firstNumber ;
                 j *= 10;
                 count++;
     
             }
-            console.log(firstNumber);
-            j = 1;
+            console.log("firstNumber", firstNumber, typeof(firstNumber));
             count = 1;
-            while(Number(allExpressions[index+count])){
-                secondNumber =  secondNumber + allExpressions[index+count]*j ;
-                j *= 10;
-                count++;
+            while(!isNaN(allExpressions[index+count]) || allExpressions[index+count] == "."){
+                if (allExpressions[index+count] == "."){
+                    flag = true;
+                    count++;
+                    j = 10;
+                    continue;
+                }
+                if (flag) {
+                    secondNumber = secondNumber + allExpressions[index+count]/j;
+                    j *=10;
+                }else{
+
+                    secondNumber =  secondNumber*10 + allExpressions[index+count];
+                    count++;
+                }
     
             }
-            console.log(secondNumber);
-            console.log(operators.count("/"));
+            console.log("secondNumber", secondNumber,typeof(secondNumber));
+            operatorCount--;
 
-            let result = firstNumber / secondNumber;
-            console.log(result);
+            // let result = firstNumber / secondNumber;
+            // console.log(result);
         }
     }
 
