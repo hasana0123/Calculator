@@ -31,21 +31,19 @@ const arithmeticKeys = [addition, subtraction, multiplication, division];
 
 const equalsTo = document.querySelector("#equalsto");
 const del = document.querySelector("#delete");
+const allClear = document.querySelector("#allclear");
 
 const cursor = document.querySelector("#cursor");
 
 const expression = document.querySelector("#expression");
 let evaluation = document.querySelector("#evaluation");
-evaluation.textContent = "";
-var temp = "";
-var numbers = [];
-var operators = [];
-var allExpressions = '';
+var operators = {};
+var operands = {};
+var allExpressions = "";
 
 numbersKeys.forEach((key) => {
     key.addEventListener("click", () => {
         const number = key.textContent;
-        temp += number;
         expression.removeChild(cursor);
         expression.textContent += number;
         expression.appendChild(cursor);
@@ -53,8 +51,6 @@ numbersKeys.forEach((key) => {
 });
 
 decimal.addEventListener("click", () => {
-    console.log("decimal clicked");
-    temp += ".";
     expression.removeChild(cursor);
     expression.textContent += ".";
     expression.appendChild(cursor);
@@ -62,121 +58,220 @@ decimal.addEventListener("click", () => {
 
 arithmeticKeys.forEach((key) => {
     key.addEventListener("click", () => {
-        if (temp.length > 0) {
-            const number = Number(temp);
-            numbers.push(number);
-            temp = "";
-        }
         const operator = key.textContent;
-        operators.push(operator);
         expression.removeChild(cursor);
         expression.textContent += operator;
         expression.appendChild(cursor);
     });
 });
 
-equalsTo.addEventListener("click", () => {
-    if (temp.length > 0) {
-        const number = Number(temp);
-        numbers.push(number);
-        temp = "";
-    }
+del.addEventListener("click", () => {
     expression.removeChild(cursor);
-    allExpressions = expression.textContent.trim();
-
-    while(operators.length) {
-        if (operators.includes("/")) {
-            operate('/');
-        }
-        else if(operators.includes("x")) {
-            operate('x');
-        }
-        else if(operators.includes("+")) {
-            operate('+');
-        }
-        else {
-            operate('-');
-        }
-    }
-    evaluation.textContent = allExpressions;
-});
-
-del.addEventListener('click', () => {
-    expression.removeChild(cursor);
-    if(expression.textContent.length) {
-        expression.textContent = expression.textContent.slice(0, -1);
-        if(temp.length) {
-            temp = temp.slice(0, -1);
-        }
-        else {
-            operators.pop();
-        }
-    }
+    expression.textContent = expression.textContent.slice(0, -1);
     expression.appendChild(cursor);
 });
 
-const operate = (op) => {
-    let operatorCount = 0;
-    operators.forEach((operator) => {
-        if (operator == op) {
-            operatorCount++;
-        }
-    });
-    console.log('OperatorCount', operatorCount);
-    while (operatorCount != 0) {
-        let index = allExpressions.indexOf(op);
-        let count = 1;
-        let firstNumber = 0;
-        let secondNumber = 0;
-        let j = 1;
-        while (!isNaN(allExpressions[index - count]) || allExpressions[index - count] == ".") {
-            if (allExpressions[index - count] == ".") {
-                firstNumber /= j;
-                j = 1;
-            } else {
-                firstNumber = Number(allExpressions[index - count]) * j + firstNumber;
-                j *= 10;
+allClear.addEventListener("click", () => {
+    expression.textContent = "";
+    expression.appendChild(cursor);
+    allExpressions = "";
+    operands = {};
+    operators = {};
+    evaluation.textContent = "";
+});
+
+equalsTo.addEventListener("click", () => {
+    expression.removeChild(cursor);
+    allExpressions = expression.textContent.trim();
+
+    // const isValid = verify(allExpressions);
+
+    // if(isValid) {
+    let result = evaluate(allExpressions);
+    console.log("result", result);
+    evaluation.textContent = result;
+    // }
+});
+
+const countOperators = (exp, operator = "all") => {
+    if (operator == "all") {
+        operators.division = countOperators(exp, "/");
+        operators.multiplication = countOperators(exp, "x");
+        operators.addition = countOperators(exp, "+");
+        operators.subtraction = countOperators(exp, "-");
+        operators.total =
+            operators.division +
+            operators.multiplication +
+            operators.addition +
+            operators.subtraction;
+        return operators.total;
+    } else {
+        let count = 0;
+        [...exp].forEach((character) => {
+            if (character == operator) {
+                count++;
             }
-            count++;
-        }
-        j = 10;
-        count = 1;
-        let flag = false;
-        while (!isNaN(allExpressions[index + count]) || allExpressions[index + count] == ".") {
-            if(allExpressions[index + count] == '.') {
-                flag = true;
-                j = 10;
+        });
+        return count;
+    }
+};
+
+const setOperands = (exp, operatorPosition) => {
+    let index = operatorPosition;
+    let count = 1;
+    let firstOperand = 0;
+    let secondOperand = 0;
+    let j = 1;
+    while (true) {
+        if (isNaN(exp[index - count])) {
+            if (exp[index - count] == ".") {
+                firstOperand /= j;
+                j = 1;
                 count++;
                 continue;
+            } else if (exp[index - count] == "-") {
+                if (isNaN(exp[index - count - 1])) {
+                    firstOperand = -firstOperand;
+                    break;
+                } else {
+                    break;
+                }
+            } else {
+                break;
             }
+        }
+        firstOperand = Number(exp[index - count]) * j + firstOperand;
+        j *= 10;
+        count++;
+    }
+    j = 10;
+    count = 1;
+    let flag = false;
+    let negative = false;
+    while (true) {
+        if (isNaN(exp[index + count])) {
+            if (count == 1 && exp[index + count] == "-") {
+                negative = true;
+                count++;
+                continue;
+            } else {
+                if (exp[index + count] == ".") {
+                    flag = true;
+                    j = 10;
+                    count++;
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        }
+        if (flag) {
+            secondOperand += exp[index + count] / j;
+            j *= 10;
+        } else {
+            secondOperand = secondOperand * j + Number(exp[index + count]);
+        }
+        count++;
+    }
+    if (negative) {
+        secondOperand = -secondOperand;
+    }
+    operands.first = Number(Math.round(firstOperand + "e10") + "e-10");
+    operands.second = Number(Math.round(secondOperand + "e10") + "e-10");
+};
+
+const operate = (op) => {
+    let firstOperand = operands.first;
+    let secondOperand = operands.second;
+    let result = 0;
+    if (op == "/") {
+        result = Number(
+            Math.round(firstOperand / secondOperand + "e10") + "e-10"
+        );
+    } else if (op == "x") {
+        result = Number(
+            Math.round(firstOperand * secondOperand + "e10") + "e-10"
+        );
+    }
+    return result;
+};
+
+const sumUp = (exp) => {
+    let sum = 0;
+    let number = 0;
+    let isNegative = false;
+    let j = 0;
+    let flag = false;
+    if (countOperators(exp) == 1) {
+        if (isNaN(exp.charAt(0))) {
+            return Number(exp);
+        }
+    }
+    for (let i = 0; i < exp.length; i++) {
+        if (isNaN(exp.charAt(i)) && exp.charAt(i) != ".") {
+            if (isNegative) {
+                sum = Number(Math.round(sum - number + "e10") + "e-10");
+            } else {
+                sum = Number(Math.round(sum + number + "e10") + "e-10");
+            }
+            number = 0;
+            if (exp.charAt(i) == "-") {
+                isNegative = true;
+                flag = false;
+                continue;
+            } else {
+                isNegative = false;
+                flag = false;
+                continue;
+            }
+        } else {
             if (flag) {
-                secondNumber += allExpressions[index + count]/j;
+                number = Number(
+                    Math.round(number + Number(exp.charAt(i)) / j + "e10") +
+                        "e-10"
+                );
                 j *= 10;
             } else {
-                secondNumber = secondNumber*j + Number(allExpressions[index + count]);
+                if (exp.charAt(i) == ".") {
+                    j = 10;
+                    flag = true;
+                    continue;
+                }
+                number = Number(
+                    Math.round(number * 10 + Number(exp.charAt(i)) + "e10") +
+                        "e-10"
+                );
             }
-            count++;
         }
-        let exp = firstNumber + op + secondNumber;
-        let result = 0;
-        if(op == '/') {
-            result = Number(Math.round((firstNumber / secondNumber) + 'e6') + 'e-6');
-        }
-        else if(op == 'x') {
-            result = Number(Math.round((firstNumber * secondNumber) + 'e6') + 'e-6');
-        }
-        else if(op == '+') {
-            result = Number(Math.round((firstNumber + secondNumber) + 'e6') + 'e-6');
-        }
-        else {
-            result = Number(Math.round((firstNumber - secondNumber) + 'e6') + 'e-6');
-        }
-        allExpressions = allExpressions.replace(exp, result);
-        operators.splice(operators.indexOf(op), 1);
-        operatorCount--;
     }
+    if (isNegative) {
+        sum = Number(Math.round(sum - number + "e10") + "e-10");
+    } else {
+        sum = Number(Math.round(sum + number + "e10") + "e-10");
+    }
+    return sum;
+};
 
-}
+const evaluate = (Expression) => {
+    countOperators(Expression);
+
+    while (countOperators(Expression, "/")) {
+        setOperands(Expression, Expression.indexOf("/"));
+        Expression = Expression.replace(
+            `${operands.first}/${operands.second}`,
+            operate("/")
+        );
+    }
+    while (countOperators(Expression, "x")) {
+        setOperands(Expression, Expression.indexOf("x"));
+        Expression = Expression.replace(
+            `${operands.first}x${operands.second}`,
+            operate("x")
+        );
+    }
+    Expression = sumUp(Expression);
+    return Expression;
+};
 
 var blink = setInterval(handleBlink, 500);
 
