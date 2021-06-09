@@ -103,6 +103,9 @@ const verify = (exp) => {
     let isComplete = false;
     let refinedExp = exp.charAt(0);
     let previousCharacter = exp.charAt(0);
+    if(refinedExp == '.') {
+        refinedExp = '0.';
+    }
     if(exp.length == 1) {
         if(isNaN(exp)) {
             isValid = false;
@@ -132,7 +135,7 @@ const verify = (exp) => {
                                     isComplete = true;
                                     break;
                                 } else {
-                                    refinedExp += currentCharacter;
+                                    refinedExp += `0${currentCharacter}`;
                                     previousCharacter = currentCharacter;
                                 }
                             } else if (
@@ -300,52 +303,57 @@ const sumUp = (exp) => {
     let isNegative = false;
     let j = 0;
     let flag = false;
-    if (countOperators(exp) == 1) {
-        if (isNaN(exp.charAt(0))) {
-            return Number(exp);
+    if(countOperators(exp)) {
+        if (countOperators(exp) == 1) {
+            if (isNaN(exp.charAt(0))) {
+                return Number(Math.round(Number(exp) + "e10") + "e-10");
+            }
         }
-    }
-    for (let i = 0; i < exp.length; i++) {
-        if (isNaN(exp.charAt(i)) && exp.charAt(i) != ".") {
-            if (isNegative) {
-                sum = Number(Math.round(sum - number + "e10") + "e-10");
-            } else {
-                sum = Number(Math.round(sum + number + "e10") + "e-10");
-            }
-            number = 0;
-            if (exp.charAt(i) == "-") {
-                isNegative = true;
-                flag = false;
-                continue;
-            } else {
-                isNegative = false;
-                flag = false;
-                continue;
-            }
-        } else {
-            if (flag) {
-                number = Number(
-                    Math.round(number + Number(exp.charAt(i)) / j + "e10") +
-                        "e-10"
-                );
-                j *= 10;
-            } else {
-                if (exp.charAt(i) == ".") {
-                    j = 10;
-                    flag = true;
+        for (let i = 0; i < exp.length; i++) {
+            if (isNaN(exp.charAt(i)) && exp.charAt(i) != ".") {
+                if (isNegative) {
+                    sum = Number(Math.round(sum - number + "e10") + "e-10");
+                } else {
+                    sum = Number(Math.round(sum + number + "e10") + "e-10");
+                }
+                number = 0;
+                if (exp.charAt(i) == "-") {
+                    isNegative = true;
+                    flag = false;
+                    continue;
+                } else {
+                    isNegative = false;
+                    flag = false;
                     continue;
                 }
-                number = Number(
-                    Math.round(number * 10 + Number(exp.charAt(i)) + "e10") +
-                        "e-10"
-                );
+            } else {
+                if (flag) {
+                    number = Number(
+                        Math.round(number + Number(exp.charAt(i)) / j + "e10") +
+                            "e-10"
+                    );
+                    j *= 10;
+                } else {
+                    if (exp.charAt(i) == ".") {
+                        j = 10;
+                        flag = true;
+                        continue;
+                    }
+                    number = Number(
+                        Math.round(number * 10 + Number(exp.charAt(i)) + "e10") +
+                            "e-10"
+                    );
+                }
             }
         }
+        if (isNegative) {
+            sum = Number(Math.round(sum - number + "e10") + "e-10");
+        } else {
+            sum = Number(Math.round(sum + number + "e10") + "e-10");
+        }
     }
-    if (isNegative) {
-        sum = Number(Math.round(sum - number + "e10") + "e-10");
-    } else {
-        sum = Number(Math.round(sum + number + "e10") + "e-10");
+    else {
+        sum = Number(Math.round(Number(exp) + "e10") + "e-10");
     }
     return sum;
 };
@@ -354,6 +362,7 @@ const evaluate = (Expression) => {
     countOperators(Expression);
 
     while (countOperators(Expression, "/")) {
+        console.log('division');
         setOperands(Expression, Expression.indexOf("/"));
         Expression = Expression.replace(
             `${operands.first}/${operands.second}`,
@@ -361,7 +370,10 @@ const evaluate = (Expression) => {
         );
     }
     while (countOperators(Expression, "x")) {
+        console.log('multiplication');
         setOperands(Expression, Expression.indexOf("x"));
+        console.log(operands.first);
+        console.log(operands.second);
         Expression = Expression.replace(
             `${operands.first}x${operands.second}`,
             operate("x")
