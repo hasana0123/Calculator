@@ -40,6 +40,7 @@ let evaluation = document.querySelector("#evaluation");
 var operators = {};
 var operands = {};
 var allExpressions = "";
+var refinedExpression = "";
 
 numbersKeys.forEach((key) => {
     key.addEventListener("click", () => {
@@ -83,15 +84,111 @@ allClear.addEventListener("click", () => {
 equalsTo.addEventListener("click", () => {
     expression.removeChild(cursor);
     allExpressions = expression.textContent.trim();
-
-    // const isValid = verify(allExpressions);
-
-    // if(isValid) {
-    let result = evaluate(allExpressions);
-    console.log("result", result);
-    evaluation.textContent = result;
-    // }
+    if(allExpressions.length) {
+        const isValid = verify(allExpressions);
+        if (isValid) {
+            console.log("the expression is valid");
+            let result = evaluate(refinedExpression);
+            console.log("result", result);
+            evaluation.textContent = result;
+        } else {
+            console.log("the expression is not valid");
+            evaluation.textContent = 'Syntax Error';
+        }
+    }
 });
+
+const verify = (exp) => {
+    let isValid = true;
+    let isComplete = false;
+    let refinedExp = exp.charAt(0);
+    let previousCharacter = exp.charAt(0);
+    if(exp.length == 1) {
+        if(isNaN(exp)) {
+            isValid = false;
+        }
+    }
+    else {
+        while (true) {
+            if (isComplete) {
+                break;
+            }
+            for (let i = 1; i < exp.length; i++) {
+                let currentCharacter = exp.charAt(i);
+                if (i == exp.length - 1) {
+                    if (isNaN(currentCharacter)) {
+                        isValid = false;
+                    } else {
+                        refinedExp += currentCharacter;
+                        isComplete = true;
+                    }
+                } else {
+                    if (isNaN(currentCharacter)) {
+                        if (isNaN(previousCharacter)) {
+                            if (currentCharacter == ".") {
+                                if (previousCharacter == ".") {
+                                    isValid = false;
+                                    isComplete = true;
+                                    break;
+                                } else {
+                                    refinedExp += currentCharacter;
+                                    previousCharacter = currentCharacter;
+                                }
+                            } else if (
+                                currentCharacter == "/" ||
+                                currentCharacter == "x"
+                            ) {
+                                isValid = false;
+                                isComplete = true;
+                                break;
+                            } else if (currentCharacter == "+") {
+                                if (previousCharacter == ".") {
+                                    isValid = false;
+                                    isComplete = true;
+                                    break;
+                                }
+                            } else {
+                                if (previousCharacter == ".") {
+                                    isValid = false;
+                                    isComplete = true;
+                                    break;
+                                } else {
+                                    if (
+                                        previousCharacter == "/" ||
+                                        previousCharacter == "x"
+                                    ) {
+                                        refinedExp += currentCharacter;
+                                        previousCharacter = currentCharacter;
+                                    } else if (previousCharacter == "+") {
+                                        refinedExp =
+                                            refinedExp.slice(0, -1) +
+                                            currentCharacter;
+                                        previousCharacter = currentCharacter;
+                                    } else {
+                                        refinedExp = refinedExp.slice(0, -1) + "+";
+                                        previousCharacter = "+";
+                                    }
+                                }
+                            }
+                        } else {
+                            refinedExp += currentCharacter;
+                            previousCharacter = currentCharacter;
+                        }
+                    } else {
+                        refinedExp += currentCharacter;
+                        previousCharacter = currentCharacter;
+                    }
+                }
+            }
+        }
+    }
+    if (isValid) {
+        refinedExpression = refinedExp;
+        return true;
+    } else {
+        return false;
+    }
+};
 
 const countOperators = (exp, operator = "all") => {
     if (operator == "all") {
