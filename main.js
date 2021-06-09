@@ -118,6 +118,7 @@ const verify = (exp) => {
                 if (i == exp.length - 1) {
                     if (isNaN(currentCharacter)) {
                         isValid = false;
+                        isComplete = true;
                     } else {
                         refinedExp += currentCharacter;
                         isComplete = true;
