@@ -1,3 +1,4 @@
+// @ts-check
 const one = document.querySelector("#one");
 const two = document.querySelector("#two");
 const three = document.querySelector("#three");
@@ -455,8 +456,10 @@ const setOperands = (exp, operatorPosition) => {
     if (negative) {
         secondOperand = -secondOperand;
     }
-    operands.first = Number(Math.round(firstOperand + "e10") + "e-10");
-    operands.second = Number(Math.round(secondOperand + "e10") + "e-10");
+    operands.first = Number(Math.round(Number(firstOperand + "e10")) + "e-10");
+    operands.second = Number(
+        Math.round(Number(secondOperand + "e10")) + "e-10"
+    );
 };
 
 const operate = (op) => {
@@ -465,11 +468,11 @@ const operate = (op) => {
     let result = 0;
     if (op == "/") {
         result = Number(
-            Math.round(firstOperand / secondOperand + "e10") + "e-10"
+            Math.round(Number(firstOperand / secondOperand + "e10")) + "e-10"
         );
     } else if (op == "x") {
         result = Number(
-            Math.round(firstOperand * secondOperand + "e10") + "e-10"
+            Math.round(Number(firstOperand * secondOperand + "e10")) + "e-10"
         );
     }
     return result;
@@ -484,15 +487,19 @@ const sumUp = (exp) => {
     if (countOperators(exp)) {
         if (countOperators(exp) == 1) {
             if (isNaN(exp.charAt(0))) {
-                return Number(Math.round(Number(exp) + "e10") + "e-10");
+                return Number(Math.round(Number(exp + "e10")) + "e-10");
             }
         }
         for (let i = 0; i < exp.length; i++) {
             if (isNaN(exp.charAt(i)) && exp.charAt(i) != ".") {
                 if (isNegative) {
-                    sum = Number(Math.round(sum - number + "e10") + "e-10");
+                    sum = Number(
+                        Math.round(Number(sum - number + "e10")) + "e-10"
+                    );
                 } else {
-                    sum = Number(Math.round(sum + number + "e10") + "e-10");
+                    sum = Number(
+                        Math.round(Number(sum + number + "e10")) + "e-10"
+                    );
                 }
                 number = 0;
                 if (exp.charAt(i) == "-") {
@@ -507,8 +514,9 @@ const sumUp = (exp) => {
             } else {
                 if (flag) {
                     number = Number(
-                        Math.round(number + Number(exp.charAt(i)) / j + "e10") +
-                            "e-10"
+                        Math.round(
+                            Number(number + Number(exp.charAt(i)) / j + "e10")
+                        ) + "e-10"
                     );
                     j *= 10;
                 } else {
@@ -519,19 +527,19 @@ const sumUp = (exp) => {
                     }
                     number = Number(
                         Math.round(
-                            number * 10 + Number(exp.charAt(i)) + "e10"
+                            Number(number * 10 + Number(exp.charAt(i)) + "e10")
                         ) + "e-10"
                     );
                 }
             }
         }
         if (isNegative) {
-            sum = Number(Math.round(sum - number + "e10") + "e-10");
+            sum = Number(Math.round(Number(sum - number + "e10")) + "e-10");
         } else {
-            sum = Number(Math.round(sum + number + "e10") + "e-10");
+            sum = Number(Math.round(Number(sum + number + "e10")) + "e-10");
         }
     } else {
-        sum = Number(Math.round(Number(exp) + "e10") + "e-10");
+        sum = Number(Math.round(Number(exp + "e10")) + "e-10");
     }
     return sum;
 };
