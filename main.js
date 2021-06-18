@@ -175,11 +175,16 @@ const verify = (exp) => {
                                 ) {
                                     refinedExp += currentCharacter;
                                     isComplete = true;
+                                } else if (previousCharacter == ".") {
+                                    refinedExp = refinedExp.slice(0, -1);
+                                    isComplete = true;
                                 } else {
                                     isValid = false;
                                     isComplete = true;
                                 }
                             }
+                        } else if (currentCharacter == ".") {
+                            isComplete = true;
                         } else {
                             isValid = false;
                             isComplete = true;
@@ -208,9 +213,10 @@ const verify = (exp) => {
                             } else if (currentCharacter == "(") {
                                 openingBracketCount++;
                                 if (previousCharacter == ".") {
-                                    isValid = false;
-                                    isComplete = true;
-                                    break;
+                                    refinedExp =
+                                        refinedExp.slice(0, -1) +
+                                        currentCharacter;
+                                    previousCharacter = currentCharacter;
                                 } else {
                                     if (previousCharacter == ")") {
                                         refinedExp += `x${currentCharacter}`;
@@ -230,6 +236,11 @@ const verify = (exp) => {
                                     if (previousCharacter == ")") {
                                         refinedExp += currentCharacter;
                                         previousCharacter = currentCharacter;
+                                    } else if (previousCharacter == ".") {
+                                        refinedExp =
+                                            refinedExp.slice(0, -1) +
+                                            currentCharacter;
+                                        previousCharacter = currentCharacter;
                                     } else {
                                         isValid = false;
                                         isComplete = true;
@@ -243,6 +254,11 @@ const verify = (exp) => {
                                 if (previousCharacter == ")") {
                                     refinedExp += currentCharacter;
                                     previousCharacter = currentCharacter;
+                                } else if (previousCharacter == ".") {
+                                    refinedExp =
+                                        refinedExp.slice(0, -1) +
+                                        currentCharacter;
+                                    previousCharacter = currentCharacter;
                                 } else {
                                     isValid = false;
                                     isComplete = true;
@@ -250,18 +266,20 @@ const verify = (exp) => {
                                 }
                             } else if (currentCharacter == "+") {
                                 if (previousCharacter == ".") {
-                                    isValid = false;
-                                    isComplete = true;
-                                    break;
+                                    refinedExp =
+                                        refinedExp.slice(0, -1) +
+                                        currentCharacter;
+                                    previousCharacter = currentCharacter;
                                 } else if (previousCharacter == ")") {
                                     refinedExp += currentCharacter;
                                     previousCharacter = currentCharacter;
                                 }
                             } else {
                                 if (previousCharacter == ".") {
-                                    isValid = false;
-                                    isComplete = true;
-                                    break;
+                                    refinedExp =
+                                        refinedExp.slice(0, -1) +
+                                        currentCharacter;
+                                    previousCharacter = currentCharacter;
                                 } else {
                                     if (
                                         previousCharacter == "/" ||
