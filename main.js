@@ -1,3 +1,8 @@
+const shift = document.querySelector("#shift");
+const onButton = document.querySelector("#on");
+const setup = document.querySelector("#setup");
+
+const setupChildNodes = [];
 const one = document.querySelector("#one");
 const two = document.querySelector("#two");
 const three = document.querySelector("#three");
@@ -40,9 +45,33 @@ var numbers = [];
 var operators = [];
 var result;
 var allExpressions;
+let setupStates = { shift: false, on: true };
+
+onButton.addEventListener("click", () => {
+    setupStates.on = true;
+    expression.appendChild(cursor);
+    setupChildNodes.forEach((child) => setup.appendChild(child));
+});
+
+shift.addEventListener("click", () => {
+    if (!isCalculatorOn()) return;
+
+    const shiftSetup = setup.querySelector(".shift");
+    if (shiftSetup.classList.contains("inactive")) {
+        shiftSetup.classList.remove("inactive");
+        shiftSetup.classList.add("active");
+        setupStates.shift = true;
+    } else {
+        shiftSetup.classList.remove("active");
+        shiftSetup.classList.add("inactive");
+        setupStates.shift = false;
+    }
+});
 
 numbersKeys.forEach((key) => {
     key.addEventListener("click", () => {
+        if (!isCalculatorOn()) return;
+
         const number = key.textContent;
         temp += number;
         expression.removeChild(cursor);
@@ -52,6 +81,8 @@ numbersKeys.forEach((key) => {
 });
 
 decimal.addEventListener("click", () => {
+    if (!isCalculatorOn()) return;
+
     temp += ".";
     expression.removeChild(cursor);
     expression.textContent += ".";
@@ -59,14 +90,23 @@ decimal.addEventListener("click", () => {
 });
 
 allclear.addEventListener("click", () => {
-    // clear input
+    if (!isCalculatorOn()) return;
+
     expression.textContent = "";
-    expression.appendChild(cursor);
-    // clear output
     evaluation.textContent = "";
+    if (setupStates.shift == true) {
+        setup.childNodes.forEach((child) => setupChildNodes.push(child));
+        setup.innerHTML = "";
+        setupStates.shift = false;
+        setupStates.on = false;
+    } else {
+        expression.appendChild(cursor);
+    }
 });
 
 del.addEventListener("click", () => {
+    if (!isCalculatorOn()) return;
+
     if (temp.length) {
         temp = temp.slice(0, -1);
     } else {
@@ -79,6 +119,8 @@ del.addEventListener("click", () => {
 
 arithmeticKeys.forEach((key) => {
     key.addEventListener("click", () => {
+        if (!isCalculatorOn()) return;
+
         if (temp.length > 0) {
             const number = Number(temp);
             numbers.push(number);
@@ -93,6 +135,8 @@ arithmeticKeys.forEach((key) => {
 });
 
 equalsTo.addEventListener("click", () => {
+    if (!isCalculatorOn()) return;
+
     if (temp.length > 0) {
         const number = Number(temp);
         numbers.push(number);
@@ -202,3 +246,11 @@ function handleBlink() {
         cursor.classList.add("active");
     }
 }
+
+const isCalculatorOn = () => {
+    if (setupStates.on) {
+        return true;
+    } else {
+        return false;
+    }
+};
