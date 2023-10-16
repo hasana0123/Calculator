@@ -8,7 +8,18 @@ const seven = document.querySelector("#seven");
 const eight = document.querySelector("#eight");
 const nine = document.querySelector("#nine");
 const zero = document.querySelector("#zero");
-const numbersKeys = [one, two, three, four, five, six, seven, eight, nine, zero]; 
+const numbersKeys = [
+    one,
+    two,
+    three,
+    four,
+    five,
+    six,
+    seven,
+    eight,
+    nine,
+    zero,
+];
 
 const addition = document.querySelector("#addition");
 const subtraction = document.querySelector("#subtraction");
@@ -19,7 +30,7 @@ const equalsTo = document.querySelector("#equalsto");
 const del = document.querySelector("#delete");
 const decimal = document.querySelector("#decimal");
 const cursor = document.querySelector("#cursor");
-
+const allclear = document.querySelector("#allclear");
 
 const expression = document.querySelector("#expression");
 let evaluation = document.querySelector("#evaluation");
@@ -31,7 +42,7 @@ var result;
 var allExpressions;
 
 numbersKeys.forEach((key) => {
-    key.addEventListener('click', () => {
+    key.addEventListener("click", () => {
         const number = key.textContent;
         temp += number;
         expression.removeChild(cursor);
@@ -40,30 +51,38 @@ numbersKeys.forEach((key) => {
     });
 });
 
-decimal.addEventListener('click',() =>{
+decimal.addEventListener("click", () => {
     temp += ".";
     expression.removeChild(cursor);
     expression.textContent += ".";
     expression.appendChild(cursor);
 });
 
-del.addEventListener('click',()=>{
-    if(temp.length){
-        temp = temp.slice(0,-1);
-    }else{
+allclear.addEventListener("click", () => {
+    // clear input
+    expression.textContent = "";
+    expression.appendChild(cursor);
+    // clear output
+    evaluation.textContent = "";
+});
+
+del.addEventListener("click", () => {
+    if (temp.length) {
+        temp = temp.slice(0, -1);
+    } else {
         operators.pop();
     }
     expression.removeChild(cursor);
-    expression.textContent = expression.textContent.slice(0,-1);
+    expression.textContent = expression.textContent.slice(0, -1);
     expression.appendChild(cursor);
 });
 
-arithmeticKeys.forEach((key) =>{
-    key.addEventListener('click',()=>{
-        if(temp.length>0){
-           const number = Number(temp);
-           numbers.push(number);
-           temp = "";
+arithmeticKeys.forEach((key) => {
+    key.addEventListener("click", () => {
+        if (temp.length > 0) {
+            const number = Number(temp);
+            numbers.push(number);
+            temp = "";
         }
         const operator = key.textContent;
         operators.push(operator);
@@ -73,42 +92,38 @@ arithmeticKeys.forEach((key) =>{
     });
 });
 
-equalsTo.addEventListener('click',()=>{
-    if(temp.length>0){
+equalsTo.addEventListener("click", () => {
+    if (temp.length > 0) {
         const number = Number(temp);
         numbers.push(number);
         temp = "";
-     }
-     expression.removeChild(cursor);
+    }
+    expression.removeChild(cursor);
     allExpressions = expression.textContent.trim();
     console.log(allExpressions);
 
-    while(operators.length){
-        if(operators.includes("/")){
+    while (operators.length) {
+        if (operators.includes("/")) {
             operate("/");
-        }else if(operators.includes("x")){
+        } else if (operators.includes("x")) {
             operate("x");
-    
-        }else if(operators.includes("+")){
+        } else if (operators.includes("+")) {
             operate("+");
-        }else{
+        } else {
             operate("-");
         }
     }
-evaluation.textContent = allExpressions;
-
+    evaluation.textContent = allExpressions;
 });
 
-const operate = (op)=>{
-    let operatorCount =0;
-    operators.forEach(operator => {
-        if (operator == op){
+const operate = (op) => {
+    let operatorCount = 0;
+    operators.forEach((operator) => {
+        if (operator == op) {
             operatorCount++;
         }
-        
     });
-    while (operatorCount != 0){
-        
+    while (operatorCount != 0) {
         let index = allExpressions.indexOf(op);
         let count = 1;
         console.log(index);
@@ -116,68 +131,73 @@ const operate = (op)=>{
         let secondNumber = 0;
         let j = 1;
         let flag = false;
-        while(!isNaN(allExpressions[index-count])|| allExpressions[index-count] =="."){
-            if (allExpressions[index-count] =="."){
-                firstNumber = firstNumber/j;
+        while (
+            !isNaN(allExpressions[index - count]) ||
+            allExpressions[index - count] == "."
+        ) {
+            if (allExpressions[index - count] == ".") {
+                firstNumber = firstNumber / j;
                 j = 1;
-                count ++;
+                count++;
                 continue;
             }
-            
-            firstNumber = Number(allExpressions[index-count])*j + firstNumber ;
+
+            firstNumber =
+                Number(allExpressions[index - count]) * j + firstNumber;
             j *= 10;
             count++;
-
         }
-        console.log("firstNumber", firstNumber, typeof(firstNumber));
+        console.log("firstNumber", firstNumber, typeof firstNumber);
         count = 1;
-        while(!isNaN(allExpressions[index+count]) || allExpressions[index+count] == "."){
-            if (allExpressions[index+count] == "."){
+        while (
+            !isNaN(allExpressions[index + count]) ||
+            allExpressions[index + count] == "."
+        ) {
+            if (allExpressions[index + count] == ".") {
                 flag = true;
                 count++;
                 j = 10;
                 continue;
             }
             if (flag) {
-                secondNumber = secondNumber + Number(allExpressions[index+count])/j;
-                j *=10;
-            }else{
-
-                secondNumber =  secondNumber*10 + Number(allExpressions[index+count]);
+                secondNumber =
+                    secondNumber + Number(allExpressions[index + count]) / j;
+                j *= 10;
+            } else {
+                secondNumber =
+                    secondNumber * 10 + Number(allExpressions[index + count]);
             }
             count++;
-
         }
-        console.log("secondNumber", secondNumber,typeof(secondNumber));
+        console.log("secondNumber", secondNumber, typeof secondNumber);
         let exp = firstNumber + op + secondNumber;
-        if(op == "/"){
-
+        if (op == "/") {
             result = firstNumber / secondNumber;
-        }else if(op == "x"){
+        } else if (op == "x") {
             result = firstNumber * secondNumber;
-        }else if( op == "+"){
+        } else if (op == "+") {
             result = firstNumber + secondNumber;
-        }else{
+        } else {
             result = firstNumber - secondNumber;
         }
 
         allExpressions = allExpressions.replace(exp, result);
         operators.splice(operators.indexOf(op), 1);
-        
+
         console.log(result);
         operatorCount--;
         console.log("all", allExpressions);
         console.log("operators", operators);
     }
-}
+};
 
 var blink = setInterval(handleBlink, 500);
 
-function handleBlink(){
-    if (cursor.classList.contains("active")){
+function handleBlink() {
+    if (cursor.classList.contains("active")) {
         cursor.classList.remove("active");
         cursor.classList.add("inactive");
-    }else{
+    } else {
         cursor.classList.remove("inactive");
         cursor.classList.add("active");
     }
