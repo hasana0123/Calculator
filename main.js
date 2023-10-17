@@ -1,289 +1,317 @@
-const shift = document.querySelector("#shift");
-const onButton = document.querySelector("#on");
-const setup = document.querySelector("#setup");
-
-const openBraces = document.querySelector("#opening-bracket");
-const closeBraces = document.querySelector("#closing-bracket");
-
-const setupChildNodes = [];
-const one = document.querySelector("#one");
-const two = document.querySelector("#two");
-const three = document.querySelector("#three");
-const four = document.querySelector("#four");
-const five = document.querySelector("#five");
-const six = document.querySelector("#six");
-const seven = document.querySelector("#seven");
-const eight = document.querySelector("#eight");
-const nine = document.querySelector("#nine");
-const zero = document.querySelector("#zero");
-const numbersKeys = [
-    one,
-    two,
-    three,
-    four,
-    five,
-    six,
-    seven,
-    eight,
-    nine,
-    zero,
-];
-
-const addition = document.querySelector("#addition");
-const subtraction = document.querySelector("#subtraction");
-const multiplication = document.querySelector("#multiply");
-const division = document.querySelector("#divide");
-const arithmeticKeys = [addition, subtraction, multiplication, division];
-const equalsTo = document.querySelector("#equalsto");
-const del = document.querySelector("#delete");
-const decimal = document.querySelector("#decimal");
-const cursor = document.querySelector("#cursor");
-const allclear = document.querySelector("#allclear");
-
-const expression = document.querySelector("#expression");
-let evaluation = document.querySelector("#evaluation");
-evaluation.textContent = "";
-var temp = "";
-var numbers = [];
-var operators = [];
-var result;
-var allExpressions;
-let setupStates = { shift: false, on: true };
-
-onButton.addEventListener("click", () => {
-    setupStates.on = true;
-    expression.appendChild(cursor);
-    setupChildNodes.forEach((child) => setup.appendChild(child));
-});
-
-shift.addEventListener("click", () => {
-    if (!isCalculatorOn()) return;
-
-    const shiftSetup = setup.querySelector(".shift");
-    if (shiftSetup.classList.contains("inactive")) {
-        shiftSetup.classList.remove("inactive");
-        shiftSetup.classList.add("active");
-        setupStates.shift = true;
-    } else {
-        shiftSetup.classList.remove("active");
-        shiftSetup.classList.add("inactive");
-        setupStates.shift = false;
+class Calculator {
+    constructor() {
+        this.init();
+        this.setEventListeners();
     }
-});
 
-openBraces.addEventListener("click", () => {
-    if (!isCalculatorOn()) return;
+    init() {
+        this.shift = document.querySelector("#shift");
+        this.onButton = document.querySelector("#on");
+        this.setup = document.querySelector("#setup");
 
-    const operator = openBraces.textContent;
-    console.log("operator =" + operator);
-    operators.push(operator);
-    expression.removeChild(cursor);
-    expression.textContent += "(";
-    expression.appendChild(cursor);
-});
+        this.openBraces = document.querySelector("#opening-bracket");
+        this.closeBraces = document.querySelector("#closing-bracket");
 
-closeBraces.addEventListener("click", () => {
-    if (!isCalculatorOn()) return;
+        this.setupChildNodes = [];
+        this.one = document.querySelector("#one");
+        this.two = document.querySelector("#two");
+        this.three = document.querySelector("#three");
+        this.four = document.querySelector("#four");
+        this.five = document.querySelector("#five");
+        this.six = document.querySelector("#six");
+        this.seven = document.querySelector("#seven");
+        this.eight = document.querySelector("#eight");
+        this.nine = document.querySelector("#nine");
+        this.zero = document.querySelector("#zero");
 
-    expression.removeChild(cursor);
-    expression.textContent += ")";
-    expression.appendChild(cursor);
-});
+        this.numbersKeys = [
+            this.one,
+            this.two,
+            this.three,
+            this.four,
+            this.five,
+            this.six,
+            this.seven,
+            this.eight,
+            this.nine,
+            this.zero,
+        ];
 
-numbersKeys.forEach((key) => {
-    key.addEventListener("click", () => {
-        if (!isCalculatorOn()) return;
+        this.addition = document.querySelector("#addition");
+        this.subtraction = document.querySelector("#subtraction");
+        this.multiplication = document.querySelector("#multiply");
+        this.division = document.querySelector("#divide");
+        this.arithmeticKeys = [
+            this.addition,
+            this.subtraction,
+            this.multiplication,
+            this.division,
+        ];
+        this.equalsTo = document.querySelector("#equalsto");
+        this.del = document.querySelector("#delete");
+        this.decimal = document.querySelector("#decimal");
+        this.cursor = document.querySelector("#cursor");
+        this.allclear = document.querySelector("#allclear");
 
-        const number = key.textContent;
-        temp += number;
-        expression.removeChild(cursor);
-        expression.textContent += number;
-        expression.appendChild(cursor);
-    });
-});
+        this.expression = document.querySelector("#expression");
+        this.evaluation = document.querySelector("#evaluation");
+        this.evaluation.textContent = "";
+        this.temp = "";
+        this.numbers = [];
+        this.operators = [];
+        this.result;
+        this.allExpressions;
+        this.setupStates = { shift: false, on: true };
 
-decimal.addEventListener("click", () => {
-    if (!isCalculatorOn()) return;
-
-    temp += ".";
-    expression.removeChild(cursor);
-    expression.textContent += ".";
-    expression.appendChild(cursor);
-});
-
-allclear.addEventListener("click", () => {
-    if (!isCalculatorOn()) return;
-
-    expression.textContent = "";
-    evaluation.textContent = "";
-    if (setupStates.shift == true) {
-        setup.childNodes.forEach((child) => setupChildNodes.push(child));
-        setup.innerHTML = "";
-        setupStates.shift = false;
-        setupStates.on = false;
-    } else {
-        expression.appendChild(cursor);
+        this.blink = setInterval(this.handleBlink, 500);
     }
-});
 
-del.addEventListener("click", () => {
-    if (!isCalculatorOn()) return;
+    setEventListeners() {
+        this.onButton.addEventListener("click", () => {
+            this.setupStates.on = true;
+            this.expression.appendChild(this.cursor);
+            this.setupChildNodes.forEach((child) =>
+                this.setup.appendChild(child)
+            );
+        });
 
-    if (temp.length) {
-        temp = temp.slice(0, -1);
-    } else {
-        operators.pop();
-    }
-    expression.removeChild(cursor);
-    expression.textContent = expression.textContent.slice(0, -1);
-    expression.appendChild(cursor);
-});
+        this.shift.addEventListener("click", () => {
+            if (!this.isCalculatorOn()) return;
 
-arithmeticKeys.forEach((key) => {
-    key.addEventListener("click", () => {
-        if (!isCalculatorOn()) return;
-
-        if (temp.length > 0) {
-            const number = Number(temp);
-            numbers.push(number);
-            temp = "";
-        }
-        const operator = key.textContent;
-        operators.push(operator);
-        expression.removeChild(cursor);
-        expression.textContent += operator;
-        expression.appendChild(cursor);
-    });
-});
-
-equalsTo.addEventListener("click", () => {
-    if (!isCalculatorOn()) return;
-
-    if (temp.length > 0) {
-        const number = Number(temp);
-        numbers.push(number);
-        temp = "";
-    }
-    expression.removeChild(cursor);
-    allExpressions = expression.textContent.trim();
-    console.log(allExpressions);
-
-    while (operators.length) {
-        if(operators.includes("(")){
-            operate("(");
-        }
-        else if (operators.includes("/")) {
-            operate("/");
-        } else if (operators.includes("x") ) {
-            operate("x");
-        } else if (operators.includes("+")) {
-            operate("+");
-        } else {
-            operate("-");
-        }
-    }
-    evaluation.textContent = allExpressions;
-});
-
-const operate = (op) => {
-    let operatorCount = 0;
-    operators.forEach((operator) => {
-        if (operator == op) {
-            operatorCount++;
-        }
-    });
-    while (operatorCount != 0) {
-        let index = allExpressions.indexOf(op);
-        let count = 1;
-        console.log(index);
-        let firstNumber = 0;
-        let secondNumber = 0;
-        let j = 1;
-        let flag = false;
-        while (
-            !isNaN(allExpressions[index - count]) ||
-            allExpressions[index - count] == "."
-        ) {
-            if (allExpressions[index - count] == ".") {
-                firstNumber = firstNumber / j;
-                j = 1;
-                count++;
-                continue;
-            }
-
-            firstNumber =
-                Number(allExpressions[index - count]) * j + firstNumber;
-            j *= 10;
-            count++;
-        }
-        console.log("firstNumber", firstNumber, typeof firstNumber);
-        count = 1;
-        while (
-            !isNaN(allExpressions[index + count]) ||
-            allExpressions[index + count] == "."
-        ) {
-            if (allExpressions[index + count] == ".") {
-                flag = true;
-                count++;
-                j = 10;
-                continue;
-            }
-            if (flag) {
-                secondNumber =
-                    secondNumber + Number(allExpressions[index + count]) / j;
-                j *= 10;
+            const shiftSetup = this.setup.querySelector(".shift");
+            if (shiftSetup.classList.contains("inactive")) {
+                shiftSetup.classList.remove("inactive");
+                shiftSetup.classList.add("active");
+                this.setupStates.shift = true;
             } else {
-                secondNumber =
-                    secondNumber * 10 + Number(allExpressions[index + count]);
+                shiftSetup.classList.remove("active");
+                shiftSetup.classList.add("inactive");
+                this.setupStates.shift = false;
             }
-            count++;
-        }
-       
-        console.log("secondNumber", secondNumber, typeof secondNumber);
-        let exp = firstNumber + op + secondNumber;
-        if (op == "/") {
-            if (secondNumber == 0) {
-                expression.textContent = "Math ERROR";
-                result = "";
+        });
+
+        this.openBraces.addEventListener("click", () => {
+            if (!this.isCalculatorOn()) return;
+
+            const operator = this.openBraces.textContent;
+            console.log("operator =" + operator);
+            this.operators.push(operator);
+            this.expression.removeChild(this.cursor);
+            this.expression.textContent += "(";
+            this.expression.appendChild(this.cursor);
+        });
+
+        this.closeBraces.addEventListener("click", () => {
+            if (!this.isCalculatorOn()) return;
+
+            this.expression.removeChild(this.cursor);
+            this.expression.textContent += ")";
+            this.expression.appendChild(this.cursor);
+        });
+
+        this.numbersKeys.forEach((key) => {
+            key.addEventListener("click", () => {
+                if (!this.isCalculatorOn()) return;
+
+                const number = key.textContent;
+                this.temp += number;
+                this.expression.removeChild(this.cursor);
+                this.expression.textContent += number;
+                this.expression.appendChild(this.cursor);
+            });
+        });
+
+        this.decimal.addEventListener("click", () => {
+            if (!this.isCalculatorOn()) return;
+
+            this.temp += ".";
+            this.expression.removeChild(this.cursor);
+            this.expression.textContent += ".";
+            this.expression.appendChild(this.cursor);
+        });
+
+        this.allclear.addEventListener("click", () => {
+            if (!this.isCalculatorOn()) return;
+
+            this.blink = setInterval(this.handleBlink, 500);
+
+            this.expression.textContent = "";
+            this.evaluation.textContent = "";
+            if (this.setupStates.shift == true) {
+                this.setup.childNodes.forEach((child) =>
+                    this.setupChildNodes.push(child)
+                );
+                this.setup.innerHTML = "";
+                this.setupStates.shift = false;
+                this.setupStates.on = false;
+            } else {
+                this.expression.appendChild(this.cursor);
             }
-            else{
+        });
 
-                result = firstNumber / secondNumber;
+        this.del.addEventListener("click", () => {
+            if (!this.isCalculatorOn()) return;
+
+            if (this.temp.length) {
+                this.temp = this.temp.slice(0, -1);
+            } else {
+                this.operators.pop();
             }
-        } else if (op == "x") {
-            result = firstNumber * secondNumber;
-        } else if (op == "+") {
-            result = firstNumber + secondNumber;
-        } else {
-            result = firstNumber - secondNumber;
-        }
+            this.expression.removeChild(this.cursor);
+            this.expression.textContent = this.expression.textContent.slice(
+                0,
+                -1
+            );
+            this.expression.appendChild(this.cursor);
+        });
 
-        allExpressions = allExpressions.replace(exp, result);
-        operators.splice(operators.indexOf(op), 1);
+        this.arithmeticKeys.forEach((key) => {
+            key.addEventListener("click", () => {
+                if (!this.isCalculatorOn()) return;
 
-        console.log(result);
-        operatorCount--;
-        console.log("all", allExpressions);
-        console.log("operators", operators);
+                if (this.temp.length > 0) {
+                    const number = Number(this.temp);
+                    this.numbers.push(number);
+                    this.temp = "";
+                }
+                const operator = key.textContent;
+                this.operators.push(operator);
+                this.expression.removeChild(this.cursor);
+                this.expression.textContent += operator;
+                this.expression.appendChild(this.cursor);
+            });
+        });
+
+        this.equalsTo.addEventListener("click", () => {
+            if (!this.isCalculatorOn()) return;
+
+            if (this.temp.length > 0) {
+                const number = Number(this.temp);
+                this.numbers.push(number);
+                this.temp = "";
+            }
+            this.expression.removeChild(this.cursor);
+            clearInterval(this.blink);
+            this.allExpressions = this.expression.textContent.trim();
+            console.log(this.allExpressions);
+
+            while (this.operators.length) {
+                if (this.operators.includes("(")) {
+                    this.operate("(");
+                } else if (this.operators.includes("/")) {
+                    this.operate("/");
+                } else if (this.operators.includes("x")) {
+                    this.operate("x");
+                } else if (this.operators.includes("+")) {
+                    this.operate("+");
+                } else {
+                    this.operate("-");
+                }
+            }
+            this.evaluation.textContent = this.allExpressions;
+        });
     }
-};
 
-var blink = setInterval(handleBlink, 500);
+    operate(op) {
+        let operatorCount = 0;
+        this.operators.forEach((operator) => {
+            if (operator == op) {
+                operatorCount++;
+            }
+        });
+        while (operatorCount != 0) {
+            let index = this.allExpressions.indexOf(op);
+            let count = 1;
+            console.log(index);
+            let firstNumber = 0;
+            let secondNumber = 0;
+            let j = 1;
+            let flag = false;
+            while (
+                !isNaN(this.allExpressions[index - count]) ||
+                this.allExpressions[index - count] == "."
+            ) {
+                if (this.allExpressions[index - count] == ".") {
+                    firstNumber = firstNumber / j;
+                    j = 1;
+                    count++;
+                    continue;
+                }
 
-function handleBlink() {
-    if (cursor.classList.contains("active")) {
-        cursor.classList.remove("active");
-        cursor.classList.add("inactive");
-    } else {
-        cursor.classList.remove("inactive");
-        cursor.classList.add("active");
+                firstNumber =
+                    Number(this.allExpressions[index - count]) * j +
+                    firstNumber;
+                j *= 10;
+                count++;
+            }
+            console.log("firstNumber", firstNumber, typeof firstNumber);
+            count = 1;
+            while (
+                !isNaN(this.allExpressions[index + count]) ||
+                this.allExpressions[index + count] == "."
+            ) {
+                if (this.allExpressions[index + count] == ".") {
+                    flag = true;
+                    count++;
+                    j = 10;
+                    continue;
+                }
+                if (flag) {
+                    secondNumber =
+                        secondNumber +
+                        Number(this.allExpressions[index + count]) / j;
+                    j *= 10;
+                } else {
+                    secondNumber =
+                        secondNumber * 10 +
+                        Number(this.allExpressions[index + count]);
+                }
+                count++;
+            }
+
+            console.log("secondNumber", secondNumber, typeof secondNumber);
+            let exp = firstNumber + op + secondNumber;
+            if (op == "/") {
+                if (secondNumber == 0) {
+                    this.expression.textContent = "Math ERROR";
+                    this.result = "";
+                } else {
+                    this.result = firstNumber / secondNumber;
+                }
+            } else if (op == "x") {
+                this.result = firstNumber * secondNumber;
+            } else if (op == "+") {
+                this.result = firstNumber + secondNumber;
+            } else {
+                this.result = firstNumber - secondNumber;
+            }
+
+            this.allExpressions = this.allExpressions.replace(exp, this.result);
+            this.operators.splice(this.operators.indexOf(op), 1);
+
+            console.log(this.result);
+            operatorCount--;
+            console.log("all", this.allExpressions);
+            console.log("operators", this.operators);
+        }
+    }
+
+    handleBlink() {
+        if (this.cursor.classList.contains("active")) {
+            this.cursor.classList.remove("active");
+            this.cursor.classList.add("inactive");
+        } else {
+            this.cursor.classList.remove("inactive");
+            this.cursor.classList.add("active");
+        }
+    }
+    isCalculatorOn() {
+        if (this.setupStates.on) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
-const isCalculatorOn = () => {
-    if (setupStates.on) {
-        return true;
-    } else {
-        return false;
-    }
-};
+const calculator = new Calculator();
