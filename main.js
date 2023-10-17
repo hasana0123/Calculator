@@ -2,6 +2,9 @@ const shift = document.querySelector("#shift");
 const onButton = document.querySelector("#on");
 const setup = document.querySelector("#setup");
 
+const openBraces = document.querySelector("#opening-bracket");
+const closeBraces = document.querySelector("#closing-bracket");
+
 const setupChildNodes = [];
 const one = document.querySelector("#one");
 const two = document.querySelector("#two");
@@ -66,6 +69,25 @@ shift.addEventListener("click", () => {
         shiftSetup.classList.add("inactive");
         setupStates.shift = false;
     }
+});
+
+openBraces.addEventListener("click", () => {
+    if (!isCalculatorOn()) return;
+
+    const operator = openBraces.textContent;
+    console.log("operator =" + operator);
+    operators.push(operator);
+    expression.removeChild(cursor);
+    expression.textContent += "(";
+    expression.appendChild(cursor);
+});
+
+closeBraces.addEventListener("click", () => {
+    if (!isCalculatorOn()) return;
+
+    expression.removeChild(cursor);
+    expression.textContent += ")";
+    expression.appendChild(cursor);
 });
 
 numbersKeys.forEach((key) => {
@@ -147,9 +169,12 @@ equalsTo.addEventListener("click", () => {
     console.log(allExpressions);
 
     while (operators.length) {
-        if (operators.includes("/")) {
+        if(operators.includes("(")){
+            operate("(");
+        }
+        else if (operators.includes("/")) {
             operate("/");
-        } else if (operators.includes("x")) {
+        } else if (operators.includes("x") ) {
             operate("x");
         } else if (operators.includes("+")) {
             operate("+");
@@ -213,10 +238,18 @@ const operate = (op) => {
             }
             count++;
         }
+       
         console.log("secondNumber", secondNumber, typeof secondNumber);
         let exp = firstNumber + op + secondNumber;
         if (op == "/") {
-            result = firstNumber / secondNumber;
+            if (secondNumber == 0) {
+                expression.textContent = "Math ERROR";
+                result = "";
+            }
+            else{
+
+                result = firstNumber / secondNumber;
+            }
         } else if (op == "x") {
             result = firstNumber * secondNumber;
         } else if (op == "+") {
