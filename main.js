@@ -9,6 +9,11 @@ class Calculator {
         this.onButton = document.querySelector("#on");
         this.setup = document.querySelector("#setup");
 
+        this.sin = document.querySelector("#sin");
+        this.cos = document.querySelector("#cos");
+        this.tan = document.querySelector("#tan");
+        this.trigFunction = [this.sin, this.cos, this.tan];
+
         this.openBraces = document.querySelector("#opening-bracket");
         this.closeBraces = document.querySelector("#closing-bracket");
 
@@ -88,6 +93,21 @@ class Calculator {
                 shiftSetup.classList.add("inactive");
                 this.setupStates.shift = false;
             }
+        });
+
+        this.trigFunction.forEach((key) => {
+            key.addEventListener("click", () => {
+                if (!this.isCalculatorOn()) return;
+
+                this.expression.removeChild(this.cursor);
+                if (this.setupStates.shift === true) {
+                    this.expression.textContent +=
+                        key.textContent + "-1".sup() + "(";
+                } else {
+                    this.expression.textContent += key.textContent + "(";
+                }
+                this.expression.appendChild(this.cursor);
+            });
         });
 
         this.openBraces.addEventListener("click", () => {
