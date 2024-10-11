@@ -51,6 +51,7 @@
 
 #type1 .butn:hover {
   background-color: rgba(234, 238, 241, 0.618);
+  cursor: pointer;
 }
 
 #type2 {
@@ -96,6 +97,7 @@
 
 #type2 .butn:hover {
   background-color: rgba(126, 129, 131, 0.618);
+  cursor: pointer;
 }
 
 #type3 {
@@ -131,10 +133,12 @@
 
 #type3 .bg-white:hover {
   background-color: rgb(102, 110, 116);
+  cursor: pointer;
 }
 
 #type3 .bg-orange:hover {
   background-color: rgba(128, 93, 17, 0.992);
+  cursor: pointer;
 }
 
 body {
